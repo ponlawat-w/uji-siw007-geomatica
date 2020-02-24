@@ -1,8 +1,8 @@
 import sys
 import os
 import pci
+# datasource: Dataset (.pix) File Manager
 from pci.api import datasource
-from pci.api import gobs
 
 def qprint(msg):
   print(msg, end = '', flush = True)
@@ -13,10 +13,12 @@ def qprintl(msg):
 # Open Dataset
 qprint('Opening file...')
 dataset = datasource.open_dataset('data/golden_horseshoe.pix', mode = datasource.eAM_WRITE)
+# ↑ Open dataset from specified path
+# ↓ aux_data is for managing channel description (get/set)
 auxiliaryData = dataset.aux_data
 qprintl('OK \\(^o^)/')
 
-qprint('Channels in dataset:')
+qprintl('Channels in dataset:')
 for i in range(1, dataset.chan_count + 1):
   qprintl('  Channel {}: {}'.format(i, auxiliaryData.get_chan_description(i)))
 
@@ -24,6 +26,7 @@ for i in range(1, dataset.chan_count + 1):
 qprintl('Is it neccessary to create a new channnel?')
 if (dataset.chan_count < 9):
   qprint('  Yes, creating new channel(s)...')
+  # pcimod: Channel Manager (Add/Delete)
   from pci.pcimod import pcimod
   pcimod(
     file = dataset.name,
@@ -41,6 +44,7 @@ else:
 
 # KCLUS
 
+# kclus: Unsupervised Classification with K-Means
 from pci.kclus import kclus
 
 qprintl('Executing K-Means...')
@@ -56,6 +60,7 @@ qprintl('Executing K-Means: OK \\(^o^)/')
 
 # FMO
 
+# fmo: Mode Filter
 from pci.fmo import fmo
 
 qprint('Applying Mode Filter...')
@@ -70,6 +75,7 @@ qprintl('OK \\(^o^)/')
 
 # SIEVE
 
+# sieve: Sieve
 from pci.sieve import sieve
 
 qprint('Applying Sieve...')
@@ -84,6 +90,7 @@ qprintl('OK \\(^o^)/')
 
 # RAS2POLY
 
+# ras2poly: Convertor of raster to polygon
 from pci.ras2poly import ras2poly
 
 qprint('Convert rasters to polygons')
@@ -92,7 +99,7 @@ shpFiles = [
   'data/golden_horseshow.prj',
   'data/golden_horseshow.shp',
   'data/golden_horseshow.shp.pox',
-  'data/golden_horseshow.shx',
+  'data/golden_horseshow.shx'
 ]
 qprintl('Checking files...')
 for shpFile in shpFiles:
@@ -115,6 +122,7 @@ qprintl('OK \\(^o^)/')
 
 # PCTMAKE
 
+# pctmake: Pseudotable Maker
 from pci.pctmake import pctmake
 
 qprintl('Making pseudocolour table...')
